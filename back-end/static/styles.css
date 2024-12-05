@@ -1,0 +1,176 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #121212; /* Original black background */
+    color: #d4af37; /* Gold text */
+    margin: 0;
+    padding: 0;
+}
+
+/* Container */
+.container {
+    width: 80%;
+    margin: 20px auto;
+    background-color: #222; /* Darker container for contrast */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2); /* Lighter shadow for depth */
+}
+
+/* User Info */
+.user-info {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Action Buttons */
+.action-buttons {
+    text-align: center;
+    margin-top: 20px; /* Space above buttons */
+}
+
+/* Table Styles */
+.watchlist-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 40px; /* Increased space between buttons and table */
+}
+
+.watchlist-table th, .watchlist-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #d4af37; /* Gold border for table rows */
+}
+
+.watchlist-table th {
+    background-color: #3a3a3a; /* Slightly lighter gray for header */
+    color: #d4af37; /* Gold text */
+    border-bottom: 2px solid #d4af37; /* Thicker border for header */
+}
+
+/* Hover Effect for the Table Rows */
+.watchlist-table tbody tr:hover {
+    background-color: #444; /* Lighter gray for hover effect */
+    transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+/* Button Styles */
+button {
+    padding: 10px 15px; /* Slightly increase padding for better touch targets */
+    font-size: 16px;
+    font-weight: bold; /* Make button text stand out */
+    color: #fff; /* White text */
+    background-color: #d4af37; /* Gold background */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 5px;
+    transition: background-color 0.3s; /* Smooth hover transition */
+}
+
+button:hover {
+    background-color: #b59c30; /* Darker gold on hover */
+}
+
+/* Additional Styling for Better Contrast */
+td {
+    background-color: #222; /* Dark background for table cells */
+    color: #d4af37; /* Ensure table data has gold text for consistency */
+}
+
+/* White Accent */
+.watchlist-table th, td {
+    background-color: #2a2a2a; /* Slightly lighter gray for table cells */
+}
+
+/* Input Field Styling */
+input[type="text"],
+input[type="number"],
+select {
+    padding: 8px;
+    border: 1px solid #d4af37; /* Gold border for input fields */
+    border-radius: 4px; /* Rounded corners */
+    background-color: #333; /* Dark background for input fields */
+    color: #d4af37; /* Gold text */
+    width: calc(100% - 16px); /* Full-width minus padding */
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus {
+    outline: none; /* Remove default outline */
+    border-color: #b59c30; /* Change border color on focus */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        width: 95%; /* Make container width more flexible on small screens */
+    }
+
+    .watchlist-table th, .watchlist-table td {
+        padding: 10px; /* Reduce padding for smaller screens */
+    }
+}
+
+/* Style for the modal content */
+.modal-content {
+    position: relative;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    width: 500px;
+    margin: 100px auto;
+}
+
+/* Style for the close button */
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #333;
+}
+
+.close-button:hover {
+    color: #820263; /* Use the purple color from your color scheme */
+}
+
+/* Search Bar Styles */
+.search-row input {
+    padding: 8px;
+    width: 90%;
+    border: 1px solid #d4af37; /* Gold border for consistency */
+    border-radius: 4px;
+    background-color: #333; /* Dark background for input fields */
+    color: #d4af37; /* Gold text */
+}
+
+.search-row input:focus {
+    outline: none;
+    border-color: #b59c30; /* Slightly darker gold on focus */
+}
+
+.year-search {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px; /* Adjust spacing between items */
+    width: 100%; /* Ensure full width container */
+}
+
+.year-input {
+    width: 40%; /* Inputs take equal width */
+    padding: 5px;
+    text-align: center; /* Centers the text inside the input */
+}
+
+.year-divider {
+    width: auto; /* Only take up as much space as the text */
+    text-align: center;
+    font-weight: bold;
+    white-space: nowrap; /* Prevents the text from wrapping */
+    margin: 0 5px; /* Adds spacing from the inputs */
+}

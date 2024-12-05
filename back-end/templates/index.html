@@ -1,0 +1,365 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>User Watchlist</title>
+        <link rel="stylesheet" href="/static/styles.css">
+    </head>
+    <body>
+        <div class="container">
+            <!-- User Info -->
+            <div class="user-info">
+                <h1>{{ user.username }}'s Watchlist</h1>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button onclick="addMovie()">Add Movie</button>
+            </div>
+
+            <!-- Add Movie Form -->
+            <div class="add-movie-form" id="add-movie-form" style="display: none;">
+                <h2>Add New Movie</h2>
+                <form id="movieForm">
+                    <label for="title">Title:</label>
+                    <input type="text" id="title" name="title" required>
+                    
+                    <label for="release_year">Release Year:</label>
+                    <input type="number" id="release_year" name="release_year" required>
+                    
+                    <label for="duration">Duration (min):</label>
+                    <input type="number" id="duration" name="duration" required>
+                    
+                    <label for="rating">Rating:</label>
+                    <input type="number" id="rating" name="rating" step="1" min="0" max="10">
+
+                    <label for="director_first_name">Director First Name:</label>
+                    <input type="text" id="director_first_name" name="director_first_name" required>
+
+                    <label for="director_last_name">Director Last Name:</label>
+                    <input type="text" id="director_last_name" name="director_last_name" required>
+
+                    <label for="genre">Genre:</label>
+                    <select id="genre" name="genre" required>
+                        <option value="">Select a genre</option>
+                        {% for genre in genres %}
+                            <option value="{{ genre }}">{{ genre }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <button type="submit">Add Movie</button>
+                </form>
+            </div>
+
+            <!-- Edit Movie Modal/Form -->
+            <div id="editMovieModal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <!-- Close Button (X) -->
+                    <span class="close-button" onclick="closeEditModal()">×</span>
+                    <h2>Edit Movie</h2>
+                    <form id="editMovieForm">
+                        <input type="hidden" id="editMovieId">
+                        
+                        <label for="editMovieTitle">Title:</label>
+                        <input type="text" id="editMovieTitle" name="title" required>
+
+                        <label for="editMovieReleaseYear">Release Year:</label>
+                        <input type="number" id="editMovieReleaseYear" name="release_year" required>
+
+                        <label for="editMovieDuration">Duration (min):</label>
+                        <input type="number" id="editMovieDuration" name="duration" required>
+
+                        <label for="editMovieRating">Rating:</label>
+                        <input type="number" id="editMovieRating" name="rating" step="1" min="0" max="10">
+
+                        <label for="editMovieDirectorFirstName">Director First Name:</label>
+                        <input type="text" id="editMovieDirectorFirstName" name="director_first_name" required>
+
+                        <label for="editMovieDirectorLastName">Director Last Name:</label>
+                        <input type="text" id="editMovieDirectorLastName" name="director_last_name" required>
+
+                        <label for="editMovieGenre">Genre:</label>
+                        <select id="editMovieGenre" name="genre" required>
+                            <option value="">Select a genre</option>
+                            {% for genre in genres %}
+                                <option value="{{ genre }}">{{ genre }}</option>
+                            {% endfor %}
+                        </select>
+
+                        <label for="editMovieStatus">Status:</label>
+                        <select id="editMovieStatus" name="status" required>
+                            <option value="WATCHED">Watched</option>
+                            <option value="NOT_WATCHED">Not Watched</option>
+                        </select>
+
+
+                        <button type="submit">Update Movie</button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Watchlist Table -->
+            <table class="watchlist-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Release Year</th>
+                        <th>Duration (min)</th>
+                        <th>Rating</th>
+                        <th>Director</th>
+                        <th>Genre</th>
+                        <th>Status</th>
+                        <th>Date Added</th>
+                        <th>Actions</th>
+                    </tr>
+                    <tr class="search-row">
+                        <td><input type="text" class="search-bar" placeholder="Search Title"></td>
+                        <td>
+                            <div class="year-search">
+                                <input type="number" class="search-bar" placeholder="Year" id="startYear">
+                                <span class="year-divider">to</span>
+                                <input type="number" class="year-bar" placeholder="Year (Optional)" id="endYear">
+                            </div>
+                        </td>                        
+                        <td><input type="number" class="search-bar" placeholder="Search Duration"></td>
+                        <td><input type="number" class="search-bar" placeholder="Search Rating" min="1" max="10"></td>
+                        <td><input type="text" class="search-bar" placeholder="Search Director"></td>
+                        <td>
+                            <select class="search-dropdown">
+                                <option value="">All Genres</option>
+                                {% for genre in genres %}
+                                <option value="{{ genre }}">{{ genre }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td>
+                            <select class="search-dropdown">
+                                <option value="">Any Status</option>
+                                <option value="">Not Watched</option>
+                                <option value="">Watched</option>
+                            </select>
+                        </td>
+                        <td><input type="text" class="search-bar" placeholder="Search Date"></td>
+                        <td>
+                            <button class="report-button">Report</button>
+                        </td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for watch_movie in user.watchlist.watchlist_movies %}
+                    <tr>
+                        <td>{{ watch_movie.movie.title }}</td>
+                        <td>{{ watch_movie.movie.release_year }}</td>
+                        <td>{{ watch_movie.movie.duration }}</td>
+                        <td>{{ watch_movie.movie.rating }}</td>
+                        <td>{{ watch_movie.movie.director.first_name }} {{ watch_movie.movie.director.last_name }}</td>
+                        <td>{{ watch_movie.movie.genre.name }}</td>
+                        <td>{{ "Watched" if watch_movie.status.value else "Not Watched" }}</td>
+                        <td>{{ watch_movie.date_added.strftime("%B %d, %Y") }}</td>
+                        <td>
+                            <button onclick="editMovie('{{ watch_movie.movie.id }}')">Edit</button>
+                            <button onclick="deleteMovie('{{ watch_movie.movie.id }}')">Delete</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <script>
+            // Function to handle adding a movie
+            function addMovie() {
+                const form = document.getElementById('add-movie-form');
+                form.style.display = form.style.display === 'none' ? 'block' : 'none';
+            }
+
+            // Handle form submission to add a new movie
+            document.getElementById('movieForm').addEventListener('submit', function (event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                // Gather form data
+                const formData = new FormData(event.target);
+                const data = {};
+                formData.forEach((value, key) => {
+                    data[key] = value;
+                });
+
+                // Send a POST request to add the movie
+                fetch('/create_movie', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json(); // Parse JSON if response is ok
+                })
+                .then(data => {
+                    if (data.message) {
+                        alert(data.message); // Show success message
+                        location.reload(); // Reload the page to see the updated watchlist
+                    } else {
+                        alert('Unexpected response format.'); // Handle unexpected response
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('An error occurred while adding the movie.');
+                });
+            });
+
+            // Function to handle editing a movie
+            function editMovie(movieId) {
+                // Fetch the current movie data from the server
+                fetch(`/edit_movie/${movieId}`)
+                    .then(response => {
+                        if (!response.ok) throw new Error('Movie not found');
+                        return response.json();
+                    })
+                    .then(movie => {
+                        // Populate the form with the current movie details
+                        document.getElementById('editMovieTitle').value = movie.title;
+                        document.getElementById('editMovieReleaseYear').value = movie.release_year;
+                        document.getElementById('editMovieDuration').value = movie.duration;
+                        document.getElementById('editMovieRating').value = movie.rating || '';
+                        document.getElementById('editMovieDirectorFirstName').value = movie.director_first_name;
+                        document.getElementById('editMovieDirectorLastName').value = movie.director_last_name;
+                        document.getElementById('editMovieGenre').value = movie.genre_name;
+                        document.getElementById('editMovieStatus').value = movie.status; // Set the status
+
+                        document.getElementById('editMovieForm').setAttribute('data-movie-id', movie.id); // Make sure you're using `movie.id`
+                        
+                        // Show the modal or edit form
+                        document.getElementById('editMovieModal').style.display = 'block';
+                    })
+                    .catch(error => console.error('Error fetching movie:', error));
+            }
+
+            // Function to handle updating a movie
+            function updateMovie(movieId) {
+                const updatedMovieData = {
+                    title: document.getElementById('editMovieTitle').value,
+                    release_year: document.getElementById('editMovieReleaseYear').value,
+                    duration: document.getElementById('editMovieDuration').value,
+                    rating: document.getElementById('editMovieRating').value,
+                    director_first_name: document.getElementById('editMovieDirectorFirstName').value,
+                    director_last_name: document.getElementById('editMovieDirectorLastName').value,
+                    genre: document.getElementById('editMovieGenre').value,
+                    status: document.getElementById('editMovieStatus').value,
+                };
+
+                // Send a PATCH request to update the movie
+                fetch(`/edit_movie/${movieId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(updatedMovieData),
+                })
+                    .then(response => {
+                        if (!response.ok) throw new Error('Error updating movie');
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log(data.message); // Print success message
+                        // Optionally close the modal or reset the form
+                        document.getElementById('editMovieModal').style.display = 'none';
+                        // Refresh the movie list or update the UI accordingly
+                        location.reload()
+                    })
+                    .catch(error => console.error('Error updating movie:', error));
+            }
+            
+            // Handle form submission to update a new movie
+            document.addEventListener('DOMContentLoaded', function() {
+                document.getElementById('editMovieForm').addEventListener('submit', function(event) {
+                    event.preventDefault(); // Prevent default form submission
+                    const movieId = this.getAttribute('data-movie-id'); // Get the movie ID from the form
+                    updateMovie(movieId); // Call the updateMovie function
+                });
+            });
+
+            // Function to handle deleting a movie
+            function deleteMovie(movieId) {
+                if (confirm("Are you sure you want to delete this movie from your watchlist?")) {
+                    fetch(`/delete_movie/${movieId}`, { method: 'DELETE' })
+                        .then(response => {
+                            if (response.ok) {
+                                alert("Movie deleted successfully!");
+                                location.reload(); // Reload the page to reflect changes
+                            } else {
+                                alert("Failed to delete the movie.");
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                }
+            }
+
+            // Report function (filtering)
+            document.addEventListener("DOMContentLoaded", () => {
+                const searchInputs = document.querySelectorAll(".search-bar, .search-dropdown");        
+                const startYearInput = document.getElementById("startYear");
+                const endYearInput = document.getElementById("endYear");
+                const searchButton = document.querySelector(".report-button");
+                const tableRows = document.querySelectorAll("tbody tr");
+
+                const filterTable = () => {
+                    const searchValues = Array.from(searchInputs).map(input => input.value.toLowerCase().trim());
+                    console.log(searchValues)
+                    const startYear = startYearInput.value.trim();
+                    const endYear = endYearInput.value.trim();
+
+                    tableRows.forEach(row => {
+                        const cells = row.querySelectorAll("td");
+                        let match1 = true;
+
+                        searchValues.forEach((searchValue, index) => {
+                            if (searchValue && index < cells.length) {
+                                const cellText = cells[index].innerText.toLowerCase();
+                                console.log(cellText)
+                                if (!cellText.includes(searchValue)) {
+                                    match1 = false;
+                                }
+                                if (index == 1) {
+                                    // default for release year (checked in next if-condition)
+                                    match1 = true;
+                                }
+                            }
+                        });
+
+                        const yearCell = row.querySelector("td:nth-child(2)"); // Assuming Year is the 2nd column
+                        const year = parseInt(yearCell.innerText, 10);
+                        let match2 = true;
+
+                        if (startYear && !endYear) {
+                            // Specific year query
+                            if (year !== parseInt(startYear, 10)) match2 = false;
+                        } else if (startYear && endYear) {
+                            // Range query
+                            const start = parseInt(startYear, 10);
+                            const end = parseInt(endYear, 10);
+                            if (year < start || year > end) match2 = false;
+                        }
+
+                        //row.style.display = match1 ? "" : "none";
+                        //row.style.display = match2 ? "" : "none";
+                        if (match1 && match2) {
+                            row.style.display = ""; // Show row if both column and year filters match
+                        } else {
+                            row.style.display = "none"; // Hide row if either filter does not match
+                        }
+                    });
+ 
+                };
+
+                searchButton.addEventListener("click", filterTable);
+            });
+
+        </script>
